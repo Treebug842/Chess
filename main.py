@@ -16,7 +16,7 @@ buttons = []
 board = [[2, 1, 0, 0, 0, 0, 7, 8],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[4, 1, 0, 0, 0, 0, 7, 10],
-		[5, 1, 0, 0, 0, 0, 7, 12],
+		[5, 1, 0, 0, 0, 8, 7, 12],
 		[6, 1, 0, 0, 0, 0, 7, 11],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[3, 1, 0, 0, 0, 0, 7, 9],
@@ -36,20 +36,6 @@ pieces = {0:"   ",
 		  11:"\u265B", # Black queen
 		  12:"\u265A"} # Black king
 
-# pieceType = {0:"empty",
-#             1:"pawn",
-#             2:"rook",
-#             3:"knight",
-#             4:"bishop",
-#             5:"queen",
-#             6:"king",
-#             7:"pawn",
-#             8:"rook",
-#             9:"knight",
-#             10:"bishop",
-#             11:"queen",
-#             12:"king"}
-
 def print_board():
 	for y in range(0, 8):
 		for x in range(0, 8):
@@ -64,18 +50,28 @@ def checkPossibleMove(piece, origin, move):
 			if move[1] == origin[1] + 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
 		try:
-			if move[1] == origin[1] + 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: # Check if pawn can capture diagonally
-				return True
+			if move[1] == origin[1] + 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
 		return False
+		# Add En passant
+		# Add Promotion
 		
-		
-		
+	elif piece == 2 or piece == 8: # Check if rooks can move
+		check = True
+		if origin[1] == move[1]:
+			yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
+			for num in yrange:
+				if board[num][origin[1]] == 0: pass # Check if the inbetween spaces are empty on the y-axis
+				else: check = False
+		if origin[0] == move[0]:
+			xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
+			for num in xrange:
+				if board[origin[0]][num] == 0: pass	# Check if the inbetween spaces are empty on the x-axis
+				else: check = False
+		if not (origin[1] == move[1] or origin[0] == move[0]): check = False # Check if the move is in a straight line
+		del yrange, xrange
+		if check == True: del check; return True
 
-
-
-	elif piece == 2: # white rook
-		pass
 
 
 
@@ -106,47 +102,9 @@ def checkPossibleMove(piece, origin, move):
 			if move[1] == origin[1] - 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
 		try:
-			if move[1] == origin[1] - 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: # Check if pawn can capture diagonally
-				return True
+			if move[1] == origin[1] - 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
 		return False
-
-
-
-	elif piece == 8: # black rook
-		pass
-
-
-
-	elif piece == 9: # black knight
-		pass
-
-
-
-	elif piece == 10: # black bishop
-		pass
-
-
-
-	elif piece == 11: # black queen
-		pass
-
-
-
-	elif piece == 12: # black king
-		pass
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -198,19 +156,14 @@ class CreateButton:
 			self.button.config(bg="green")
 
 		else:
-			# self.button.config(bg="red")
-			
-
 			if checkPossibleMove(board[CreateButton.originCoords[0]][CreateButton.originCoords[1]], CreateButton.originCoords, self.coords) != True:
 				thread.start()
 				return
 
-			
 			# Check if piece is same colour
 			if board[self.coords[0]][self.coords[1]] in range(1, 7) and board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] in range(1, 7):
 				thread.start()
 				return
-
 			if board[self.coords[0]][self.coords[1]] in range(7, 13) and board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] in range(7, 13):
 				thread.start()
 				return
@@ -226,8 +179,7 @@ class CreateButton:
 			turn = 0 if turn == 1 else 1
 
 
-
-
+# Create Buttons
 createCount = 0
 for y in range(0, 8):
 	for x in range(0, 8):
@@ -235,6 +187,7 @@ for y in range(0, 8):
 		createCount += 1
 del createCount
 
+# Place buttons
 placeCount = 0
 for x in range(0, 8):
 	for y in range(0, 8):
