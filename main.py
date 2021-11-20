@@ -17,7 +17,7 @@ board = [[2, 1, 0, 0, 0, 0, 7, 8],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[5, 1, 0, 0, 0, 0, 7, 12],
-		[6, 1, 0, 6, 0, 0, 7, 11],
+		[6, 1, 0, 0, 0, 0, 7, 11],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[2, 1, 0, 0, 0, 0, 7, 8]]
@@ -69,8 +69,7 @@ def checkPossibleMove(piece, origin, move):
 				if board[origin[0]][num] == 0: pass	# Check if the inbetween spaces are empty on the x-axis
 				else: check = False
 		if not (origin[1] == move[1] or origin[0] == move[0]): check = False # Check if the move is in a straight line
-		del yrange, xrange
-		if check == True: del check; return True
+		if check == True: return True
 
 	elif piece == 3 or piece == 9: # Check if knights can move
 		if origin[0]-2 == move[0] and origin[1]-1 == move[1]: return True # Check if knight can move up 2, left 1
@@ -91,8 +90,7 @@ def checkPossibleMove(piece, origin, move):
 				if board[yrange[num]][xrange[num]] == 0: pass
 				else: check = False
 		else: check = False
-		del yrange, xrange
-		if check == True: del check; return True
+		if check == True: return True
 
 	elif piece == 5 or piece == 11: # Check if queens can move
 		rookCheck = True
@@ -116,9 +114,8 @@ def checkPossibleMove(piece, origin, move):
 				if board[yrange[num]][xrange[num]] == 0: pass
 				else: bishopCheck = False
 		else: bishopCheck = False
-		del yrange, xrange
 
-		if rookCheck == True or bishopCheck == True: del rookCheck, bishopCheck; return True
+		if rookCheck == True or bishopCheck == True: return True
 
 	elif piece == 6 or piece == 12: # Check if kings can move
 		if origin[0]-1 == move[0] and origin[1] == move[1]: return True # Check if king can move 1 up
