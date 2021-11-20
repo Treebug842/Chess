@@ -16,7 +16,7 @@ buttons = []
 board = [[2, 1, 0, 0, 0, 0, 7, 8],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[4, 1, 0, 0, 0, 0, 7, 10],
-		[5, 1, 0, 0, 0, 8, 7, 12],
+		[5, 1, 0, 0, 0, 0, 7, 12],
 		[6, 1, 0, 0, 0, 0, 7, 11],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[3, 1, 0, 0, 0, 0, 7, 9],
@@ -72,12 +72,15 @@ def checkPossibleMove(piece, origin, move):
 		del yrange, xrange
 		if check == True: del check; return True
 
-
-
-
-	elif piece == 3: # white knight
-		pass
-
+	elif piece == 3 or piece == 9: # Check if knights can move
+		if origin[0]-2 == move[0] and origin[1]-1 == move[1]: return True # Check if knight can move up 2, left 1
+		if origin[0]-2 == move[0] and origin[1]+1 == move[1]: return True # Check if knight can move up 2, right 1
+		if origin[0]+2 == move[0] and origin[1]-1 == move[1]: return True # Check if knight can move down 2, left 1
+		if origin[0]+2 == move[0] and origin[1]+1 == move[1]: return True # Check if knight can move down 2, right 1
+		if origin[0]-1 == move[0] and origin[1]+2 == move[1]: return True # Check if knight can move right 2, up 1
+		if origin[0]+1 == move[0] and origin[1]+2 == move[1]: return True # Check if knight can move right 2, down 1
+		if origin[0]-1 == move[0] and origin[1]-2 == move[1]: return True # Check if knight can move left 2, up 1
+		if origin[0]+1 == move[0] and origin[1]-2 == move[1]: return True # Check if knight can move left 2, down 1
 
 
 	elif piece == 4: # white bishop
