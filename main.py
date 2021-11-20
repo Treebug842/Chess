@@ -82,7 +82,7 @@ def checkPossibleMove(piece, origin, move):
 		if origin[0]-1 == move[0] and origin[1]-2 == move[1]: return True # Check if knight can move left 2, up 1
 		if origin[0]+1 == move[0] and origin[1]-2 == move[1]: return True # Check if knight can move left 2, down 1
 
-	elif piece == 4 or piece == 10: # white bishop
+	elif piece == 4 or piece == 10: # Checkif bishops can move
 		check= True
 		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
 		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
@@ -94,10 +94,31 @@ def checkPossibleMove(piece, origin, move):
 		del yrange, xrange
 		if check == True: del check; return True
 
-	elif piece == 5: # white queen
-		pass
+	elif piece == 5 or piece == 11: # Check if queens can move
+		rookCheck = True
+		bishopCheck = True
+		if origin[1] == move[1]:
+			yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
+			for num in yrange:
+				if board[num][origin[1]] == 0: pass # Check if the inbetween spaces are empty on the y-axis
+				else: rookCheck = False
+		if origin[0] == move[0]:
+			xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
+			for num in xrange:
+				if board[origin[0]][num] == 0: pass	# Check if the inbetween spaces are empty on the x-axis
+				else: rookCheck = False
+		if not (origin[1] == move[1] or origin[0] == move[0]): rookCheck = False # Check if the move is in a straight line
 
+		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
+		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
+		if len(yrange) == len(xrange):
+			for num in range(len(yrange)):
+				if board[yrange[num]][xrange[num]] == 0: pass
+				else: bishopCheck = False
+		else: bishopCheck = False
+		del yrange, xrange
 
+		if rookCheck == True or bishopCheck == True: del rookCheck, bishopCheck; return True
 
 	elif piece == 6: # white king
 		pass
