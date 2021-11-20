@@ -17,7 +17,7 @@ board = [[2, 1, 0, 0, 0, 0, 7, 8],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[5, 1, 0, 0, 0, 0, 7, 12],
-		[6, 1, 0, 0, 0, 0, 7, 11],
+		[6, 1, 0, 6, 0, 0, 7, 11],
 		[4, 1, 0, 0, 0, 0, 7, 10],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[2, 1, 0, 0, 0, 0, 7, 8]]
@@ -120,10 +120,15 @@ def checkPossibleMove(piece, origin, move):
 
 		if rookCheck == True or bishopCheck == True: del rookCheck, bishopCheck; return True
 
-	elif piece == 6: # white king
-		pass
-
-
+	elif piece == 6 or piece == 12: # Check if kings can move
+		if origin[0]-1 == move[0] and origin[1] == move[1]: return True # Check if king can move 1 up
+		if origin[0]-1 == move[0] and origin[1]-1 == move[1]: return True # Check if king can move 1 up, 1 left
+		if origin[0]-1 == move[0] and origin[1]+1 == move[1]: return True # Check if king can move 1 up, 1 right
+		if origin[0] == move[0] and origin[1]+1 == move[1]: return True # Check if king can move 1 right
+		if origin[0]+1 == move[0] and origin[1]+1 == move[1]: return True # Check if king can move 1 right, 1 down
+		if origin[0]+1 == move[0] and origin[1] == move[1]: return True # Check if king can move 1 down
+		if origin[0]+1 == move[0] and origin[1]-1 == move[1]: return True # Check if king can move 1 down, 1 left
+		if origin[0] == move[0] and origin[1]-1 == move[1]: return True # Check if king can move 1 left
 
 	elif piece == 7: # Check if black pawn can move forward
 		if origin[1] == 6 and move[1] == 4 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: return True # Check if pawn can move 2 squares
