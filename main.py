@@ -3,14 +3,13 @@ import threading
 import tkinter as tk
 from typing import Collection
 
-
 root = tk.Tk()
 root.geometry("664x623")
 root.title("Chess")
 
-frame1 = tk.Frame(root); frame1.pack()
+boardFrame = tk.Frame(root); boardFrame.pack()
 
-turn =0
+turn = 0
 buttons = []
 
 board = [[2, 1, 0, 0, 0, 0, 7, 8],
@@ -140,17 +139,15 @@ def checkPossibleMove(piece, origin, move):
 
 	return False
 
-
 class CreateButton:
-
 	originCoords = ()
 	originNumber = None
 
 	def __init__(self, number, coords):
 		self.number = number
 		self.coords = coords
-		self.button = tk.Button(frame1, text=pieces[board[coords[0]][coords[1]]], font='Helvetica 18 bold', command=self.button_click, width=5, height=2, relief="solid", borderwidth=1)
-		# self.button = tk.Button(frame1, text=number, font='Helvetica 18 bold', command=self.button_click, width=5, height=2)
+		self.button = tk.Button(boardFrame, text=pieces[board[coords[0]][coords[1]]], font='Helvetica 18 bold', command=self.button_click, width=5, height=2, relief="solid", borderwidth=1)
+		# self.button = tk.Button(boardFrame, text=number, font='Helvetica 18 bold', command=self.button_click, width=5, height=2)
 
 	def __flashRed(self):
 		self.button.config(bg="red"); 
@@ -202,15 +199,16 @@ class CreateButton:
 				return
 
 			# Successful move
-			board[self.coords[0]][self.coords[1]] = board[CreateButton.originCoords[0]][CreateButton.originCoords[1]]
-			self.button.config(text=pieces[board[self.coords[0]][self.coords[1]]])
-			buttons[(CreateButton.originNumber)].button.config(bg="SystemButtonFace")
-			board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] = 0
-			buttons[(CreateButton.originNumber)].button.config(text=pieces[0])
-			CreateButton.originCoords = ()
-			CreateButton.originNumber = None
-			turn = 0 if turn == 1 else 1
+			board[self.coords[0]][self.coords[1]] = board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] # Sets board to new piece
+			self.button.config(text=pieces[board[self.coords[0]][self.coords[1]]]) # Sets new button to piece
 
+			buttons[(CreateButton.originNumber)].button.config(bg="SystemButtonFace") # Resets the colour of the old button
+			board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] = 0 # Sets the old board place to zero
+			buttons[(CreateButton.originNumber)].button.config(text=pieces[0]) # Resets the text of the old button
+
+			CreateButton.originCoords = () # Resets stored coords
+			CreateButton.originNumber = None # Resets stored button
+			turn = 0 if turn == 1 else 1 # Changes the turn
 
 # Create Buttons
 createCount = 0
