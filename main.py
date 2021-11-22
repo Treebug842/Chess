@@ -1,7 +1,6 @@
 import time
 import threading
 import tkinter as tk
-from typing import Collection
 
 root = tk.Tk()
 root.geometry("664x623")
