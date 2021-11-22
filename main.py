@@ -12,6 +12,10 @@ boardFrame = tk.Frame(root); boardFrame.pack()
 turn = 0
 buttons = []
 
+originCoords = ()
+originNumber = None
+enPassant = ()
+
 board = [[2, 1, 0, 0, 0, 0, 7, 8],
 		[3, 1, 0, 0, 0, 0, 7, 9],
 		[4, 1, 0, 0, 0, 0, 7, 10],
@@ -108,6 +112,7 @@ def checkPossibleMove(piece, origin, move):
 
 		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
 		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
+
 		if len(yrange) == len(xrange):
 			for num in range(len(yrange)):
 				if board[yrange[num]][xrange[num]] == 0: pass
@@ -140,9 +145,6 @@ def checkPossibleMove(piece, origin, move):
 	return False
 
 class CreateButton:
-	originCoords = ()
-	originNumber = None
-
 	def __init__(self, number, coords):
 		self.number = number
 		self.coords = coords
@@ -155,16 +157,16 @@ class CreateButton:
 		self.button.config(bg="SystemButtonFace")
 
 	def button_click(self):
-		global turn
+		global turn, originCoords, originNumber, enPassant
 		thread = threading.Thread(target=self.__flashRed)
 
-		if CreateButton.originCoords == self.coords:
-			CreateButton.originCoords = ()
-			CreateButton.originNumber = None
+		if originCoords == self.coords:
+			originCoords = ()
+			originNumber = None
 			self.button.config(bg="SystemButtonFace")
 			return
 
-		if CreateButton.originCoords == ():
+		if originCoords == ():
 			# Check if space is empty
 			if board[self.coords[0]][self.coords[1]] == 0:
 				thread.start()
@@ -180,34 +182,33 @@ class CreateButton:
 					thread.start()
 					return
 
-
-			CreateButton.originCoords = self.coords
-			CreateButton.originNumber = self.number
+			originCoords = self.coords
+			originNumber = self.number
 			self.button.config(bg="green")
 
 		else:
-			if checkPossibleMove(board[CreateButton.originCoords[0]][CreateButton.originCoords[1]], CreateButton.originCoords, self.coords) != True:
+			if checkPossibleMove(board[originCoords[0]][originCoords[1]], originCoords, self.coords) != True:
 				thread.start()
 				return
 
 			# Check if piece is same colour
-			if board[self.coords[0]][self.coords[1]] in range(1, 7) and board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] in range(1, 7):
+			if board[self.coords[0]][self.coords[1]] in range(1, 7) and board[originCoords[0]][originCoords[1]] in range(1, 7):
 				thread.start()
 				return
-			if board[self.coords[0]][self.coords[1]] in range(7, 13) and board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] in range(7, 13):
+			if board[self.coords[0]][self.coords[1]] in range(7, 13) and board[originCoords[0]][originCoords[1]] in range(7, 13):
 				thread.start()
 				return
 
 			# Successful move
-			board[self.coords[0]][self.coords[1]] = board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] # Sets board to new piece
+			board[self.coords[0]][self.coords[1]] = board[originCoords[0]][originCoords[1]] # Sets board to new piece
 			self.button.config(text=pieces[board[self.coords[0]][self.coords[1]]]) # Sets new button to piece
 
-			buttons[(CreateButton.originNumber)].button.config(bg="SystemButtonFace") # Resets the colour of the old button
-			board[CreateButton.originCoords[0]][CreateButton.originCoords[1]] = 0 # Sets the old board place to zero
-			buttons[(CreateButton.originNumber)].button.config(text=pieces[0]) # Resets the text of the old button
+			buttons[(originNumber)].button.config(bg="SystemButtonFace") # Resets the colour of the old button
+			board[originCoords[0]][originCoords[1]] = 0 # Sets the old board place to zero
+			buttons[(originNumber)].button.config(text=pieces[0]) # Resets the text of the old button
 
-			CreateButton.originCoords = () # Resets stored coords
-			CreateButton.originNumber = None # Resets stored button
+			originCoords = () # Resets stored coords
+			originNumber = None # Resets stored button
 			turn = 0 if turn == 1 else 1 # Changes the turn
 
 # Create Buttons
