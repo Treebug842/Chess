@@ -56,7 +56,6 @@ def checkPossibleMove(piece, origin, move):
 		except: pass
 		return False
 		# Add En passant
-		# Add Promotion
 		
 	elif piece == 2 or piece == 8: # Check if rooks can move
 		check = True
@@ -209,6 +208,17 @@ class CreateButton:
 			originCoords = () # Resets stored coords
 			originNumber = None # Resets stored button
 			turn = 0 if turn == 1 else 1 # Changes the turn
+
+			# Check for promotion
+			for y in range(0, 8):
+				if board[y][0] == 7: # Checks for black promotion
+					board[y][0] = 11
+					buttons[(y*8)].button.config(text=pieces[11])
+			for y in range(0, 8):
+				if board[y][7] == 1: # Checks for white promotion
+					board[y][7] = 5
+					buttons[(y*8)].button.config(text=pieces[5])
+	
 
 # Create Buttons
 createCount = 0
