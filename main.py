@@ -83,9 +83,9 @@ def checkPossibleMove(piece, origin, move):
 		if origin[0]+1 == move[0] and origin[1]-2 == move[1]: return True # Check if knight can move left 2, down 1
 
 	elif piece == 4 or piece == 10: # Checkif bishops can move
-		check= True
-		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
-		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
+		check = True
+		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in reversed(range(move[0]+1, origin[0]))]
+		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in reversed(range(move[1]+1, origin[1]))]
 		if len(yrange) == len(xrange):
 			for num in range(len(yrange)):
 				if board[yrange[num]][xrange[num]] == 0: pass
@@ -107,16 +107,13 @@ def checkPossibleMove(piece, origin, move):
 				if board[origin[0]][num] == 0: pass	# Check if the inbetween spaces are empty on the x-axis
 				else: rookCheck = False
 		if not (origin[1] == move[1] or origin[0] == move[0]): rookCheck = False # Check if the move is in a straight line
-
-		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in range(move[0]+1, origin[0])]
-		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in range(move[1]+1, origin[1])]
-
+		yrange = [char for char in range(origin[0]+1, move[0])] if origin[0] < move[0] else [char for char in reversed(range(move[0]+1, origin[0]))]
+		xrange = [char for char in range(origin[1]+1, move[1])] if origin[1] < move[1] else [char for char in reversed(range(move[1]+1, origin[1]))]
 		if len(yrange) == len(xrange):
 			for num in range(len(yrange)):
 				if board[yrange[num]][xrange[num]] == 0: pass
 				else: bishopCheck = False
 		else: bishopCheck = False
-
 		if rookCheck == True or bishopCheck == True: return True
 
 	elif piece == 6 or piece == 12: # Check if kings can move
