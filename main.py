@@ -215,6 +215,15 @@ class CreateButton:
 				if board[y][7] == 1: # Checks for white promotion
 					board[y][7] = 5
 					buttons[(y*8)].button.config(text=pieces[5])
+
+			# Check for winner
+			white, black = False, False
+			for y in range(0, 8):
+				for x in range(0, 8):
+					if board[y][x] == 6: white = True
+					if board[y][x] == 12: black = True
+			if black == False: print("White wins!!"); exit()
+			if white == False: print("Black wins!!"); exit()
 	
 
 # Create Buttons
