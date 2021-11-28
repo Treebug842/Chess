@@ -45,8 +45,25 @@ def print_board():
 		print()
 
 def checkPossibleMove(piece, origin, move):
+	global enPassant, buttons
 	if piece == 1: # Check if white pawn can move forward
-		if origin[1] == 1 and move[1] == 3 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: return True # Check if pawn can move 2 squares
+		try:
+			if move[1] == origin[1] + 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] == 0 and (enPassant[0],enPassant[1]+1) == move: # Check for enPassant upward
+				board[enPassant[1]][enPassant[1]] = 0 # Sets the old board place to zero
+				buttons[((enPassant[0]*8)+enPassant[1])].button.config(text=pieces[0]) # Resets the text of the old button
+				return True
+		except: pass
+		try:
+			if move[1] == origin[1] + 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] == 0 and (enPassant[0],enPassant[1]+1) == move: # Check for enPassant downward
+				board[enPassant[1]][enPassant[1]] = 0 # Sets the old board place to zero
+				buttons[((enPassant[0]*8)+enPassant[1])].button.config(text=pieces[0]) # Resets the text of the old button
+				return True
+		except: pass
+
+		if origin[1] == 1 and move[1] == 3 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: # Check if pawn can move 2 squares
+			enPassant = move
+			return True
+		else: enPassant = ()
 		if move[1] == origin[1] + 1 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: return True # Check if pawn can move 1 square forward
 		try: 
 			if move[1] == origin[1] + 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
@@ -54,8 +71,8 @@ def checkPossibleMove(piece, origin, move):
 		try:
 			if move[1] == origin[1] + 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
+
 		return False
-		# Add En passant
 		
 	elif piece == 2 or piece == 8: # Check if rooks can move
 		check = True
@@ -127,7 +144,23 @@ def checkPossibleMove(piece, origin, move):
 		if origin[0] == move[0] and origin[1]-1 == move[1]: return True # Check if king can move 1 left
 
 	elif piece == 7: # Check if black pawn can move forward
-		if origin[1] == 6 and move[1] == 4 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: return True # Check if pawn can move 2 squares
+		try:
+			if move[1] == origin[1] - 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] == 0 and (enPassant[0],enPassant[1]-1) == move: # Check enPassant upward
+				board[enPassant[1]][enPassant[1]] = 0 # Sets the old board place to zero
+				buttons[((enPassant[0]*8)+enPassant[1])].button.config(text=pieces[0]) # Resets the text of the old button
+				return True
+		except: pass
+		try:
+			if move[1] == origin[1] - 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] == 0 and (enPassant[0],enPassant[1]-1) == move: # Check enPassant downward
+				board[enPassant[1]][enPassant[1]] = 0 # Sets the old board place to zero
+				buttons[((enPassant[0]*8)+enPassant[1])].button.config(text=pieces[0]) # Resets the text of the old button
+				return True
+		except: pass
+
+		if origin[1] == 6 and move[1] == 4 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: # Check if pawn can move 2 squares
+			enPassant = move
+			return True
+		else: enPassant = ()
 		if move[1] == origin[1] - 1 and board[move[0]][move[1]] == 0 and origin[0] == move[0]: return True # Check if pawn can move 1 square forward
 		try: 
 			if move[1] == origin[1] - 1 and move[0] == origin[0] + 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
@@ -136,7 +169,7 @@ def checkPossibleMove(piece, origin, move):
 			if move[1] == origin[1] - 1 and move[0] == origin[0] - 1 and board[move[0]][move[1]] != 0: return True # Check if pawn can capture diagonally
 		except: pass
 		return False
-
+		
 	return False
 
 class CreateButton:
@@ -185,6 +218,15 @@ class CreateButton:
 			if checkPossibleMove(board[originCoords[0]][originCoords[1]], originCoords, self.coords) != True:
 				thread.start()
 				return
+
+			# Reset enPassant if other move made
+			if board[originCoords[0]][originCoords[1]] not in [1, 7]:
+				enPassant = ()
+
+			# Reset enPassant if other move is made
+			if board[originCoords[0]][originCoords[1]] not in [1, 7]:
+				enPassant = ()
+				print("yeah")
 
 			# Check if piece is same colour
 			if board[self.coords[0]][self.coords[1]] in range(1, 7) and board[originCoords[0]][originCoords[1]] in range(1, 7):
